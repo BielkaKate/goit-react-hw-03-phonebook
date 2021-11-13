@@ -4,7 +4,7 @@ import ContactForm from './components/ContactForm/ContactForm';
 import ContactList from './components/ContactList/ContactList';
 import Filter from './components/Filter/Filter';
 import shortid from 'shortid';
-import PropTypes, { shape } from 'prop-types';
+import PropTypes from 'prop-types';
 
 class App extends Component {
   static propTypes = {
@@ -58,6 +58,18 @@ class App extends Component {
       contacts: prevState.contacts.filter(contact => contact.id !== contactId),
     }));
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
+
+  componentDidMount() {
+    const contactsStorage = localStorage.getItem('contacts');
+    const contactsStorageParse = JSON.parse(contactsStorage);
+    this.setState({ contacts: contactsStorageParse });
+  }
 
   render() {
     const { filter } = this.state;
